@@ -7,33 +7,15 @@ import java.util.stream.Collectors;
 public class Main {
     public static class HTTP_Request {
         private Map<String, String> request;
-        private String dateHeader;
-        private String hostHeader;
-        private String contentTypeHeader;
-        private List<String> authorizationHeader;
+        private Map<String, String> headers;
         private Map<String, String> body;
 
         private HTTP_Request() {
+            this.headers = new LinkedHashMap<>();
         }
 
         private void setRequest(Map<String, String> request) {
             this.request = request;
-        }
-
-        private void setDateHeader(String dateHeader) {
-            this.dateHeader = dateHeader;
-        }
-
-        private void setHostHeader(String hostHeader) {
-            this.hostHeader = hostHeader;
-        }
-
-        private void setContentTypeHeader(String contentTypeHeader) {
-            this.contentTypeHeader = contentTypeHeader;
-        }
-
-        private void setAuthorizationHeader(List<String> authorizationHeader) {
-            this.authorizationHeader = authorizationHeader;
         }
 
         private void setBody(Map<String, String> body) {
@@ -45,26 +27,17 @@ public class Main {
             return this.request;
         }
 
-        private String getDateHeader() {
-            return this.dateHeader;
-        }
-
-        private String getHostHeader() {
-            return this.hostHeader;
-        }
-
-        private String getContentTypeHeader() {
-            return this.contentTypeHeader;
-        }
-
-        private List<String> getAuthorizationHeader() {
-            return this.authorizationHeader;
+        private Map<String, String> getHeaders() {
+            return Collections.unmodifiableMap(this.headers);
         }
 
         private Map<String, String> getBody() {
             return this.body;
         }
 
+        private void addHeader(String headerKey, String headerValue) {
+            this.headers.put(headerKey, headerValue);
+        }
 
     }
 
@@ -93,24 +66,20 @@ public class Main {
         }
 
         if (!urls.contains(request.getRequest().get("url"))) {
-            result = String.format(
-                    request.getRequest().get("httpVersion") + " " + "404 Not Found\r\n" +
-                            addNotNullHeaders(request) + "\r\nThe requested functionality was not found.");
+            result = request.getRequest().get("httpVersion") + " " + "404 Not Found\r\n" +
+                    addNotNullHeaders(request) + "\r\nThe requested functionality was not found.";
             System.out.println(result);
-        } else if (request.getAuthorizationHeader() == null) {
-            result = String.format(
-                    request.getRequest().get("httpVersion") + " " + "401 Unauthorized\r\n" +
-                            addNotNullHeaders(request) +
-                            "\r\nYou are not authorized to access the requested " +
-                            "functionality.");
+        } else if (!request.getHeaders().containsKey("Authorization")) {
+            result = request.getRequest().get("httpVersion") + " " + "401 Unauthorized\r\n" +
+                    addNotNullHeaders(request) +
+                    "\r\nYou are not authorized to access the requested " +
+                    "functionality.";
             System.out.println(result);
 
-        }
-        else {
-            String decodeStr = request.getAuthorizationHeader().get(0);
+        } else {
+            String decodeStr = request.getHeaders().get("Authorization");
             name = new String(Base64.getDecoder().decode(decodeStr.getBytes()));
-            result = String.format(
-                    request.getRequest().get("httpVersion") + " " + "200 OK\r\n" + addNotNullHeaders(request));
+            result = request.getRequest().get("httpVersion") + " " + "200 OK\r\n" + addNotNullHeaders(request);
 
             if (request.getBody() != null && request.getBody().entrySet().size() != 0 &&
                     "POST".equals(request.getRequest().get("method"))) {
@@ -122,63 +91,44 @@ public class Main {
                                 collect(Collectors.joining(", ")) + ".";
 
             } else if ("GET".equals(request.getRequest().get("method"))) {
-                result+= String.format("\r\nGreetings %s!\r\n", name);
+                result += String.format("\r\nGreetings %s!\r\n", name);
             } else if ("POST".equals(request.getRequest().get("method")) && (request.getBody() == null ||
                     request.getBody().entrySet().size() == 0)) {
-                result = String.format(
-                        request.getRequest().get("httpVersion") + " " + "400 Bad Request\r\n" +
-                                addNotNullHeaders(request) + "\r\nThere was an error with the requested functionality " +
-                                "due to malformed request.");
+                result = request.getRequest().get("httpVersion") + " " + "400 Bad Request\r\n" +
+                        addNotNullHeaders(request) + "\r\nThere was an error with the requested functionality " +
+                        "due to malformed request.";
             }
             System.out.println(result);
         }
     }
 
     private static String addNotNullHeaders(HTTP_Request request) {
-        String lines = "";
-        Field[] fields = HTTP_Request.class.getDeclaredFields();
-        for (int i = 1; i < 4; i++) {
-            fields[i].setAccessible(true);
-            try {
-                if ((fields[i].get(request) != null) && ("dateHeader".equals(fields[i].getName()) ||
-                        "hostHeader".equals(fields[i].getName()) || "contentTypeHeader".equals(fields[i].getName()))) {
-                    lines += convertHeaderKey(fields[i]) + ": " + fields[i].get(request) + "\r\n";
-                }
-            } catch (final IllegalAccessException e) {
-                lines += fields[i].getName() + " > " + e.getClass().getSimpleName();
-            }
-        }
-        return lines;
-    }
-
-    private static String convertHeaderKey(Field field) {
-        String result = "";
-        String headerKey = field.getName().split("Header")[0];
-        headerKey = headerKey.substring(0, 1).toUpperCase().concat(headerKey.substring(1));
-        List<String> resultArr = Arrays.asList(headerKey.split("(?=\\p{Upper})"));
-        if (resultArr.size() > 1)
-            result = resultArr.get(0) + "-" + resultArr.get(1);
-        else result = headerKey;
-        return result;
+        StringBuilder headers = new StringBuilder();
+        request.getHeaders().entrySet().stream().filter( header->"Date".equals(header.getKey())||
+                "Content-Type".equals(header.getKey())||"Host".equals(header.getKey()))
+                .forEach((kvp) -> headers.append(kvp.getKey()).append(": ")
+                .append(kvp.getValue()).append(System.lineSeparator()));
+        return headers.toString();
     }
 
     private static void parseInputReq(String line, HTTP_Request request) {
-        String headerKey = line.split("\\s+")[0];
-        String headerValue = line.split("\\s+")[1];
+        String headerKey = line.substring(0,line.indexOf(":"));
+        String headerValue = line.substring(line.indexOf(":")+2);
         switch (headerKey) {
-            case ("Date:"):
-                request.setDateHeader(headerValue);
+            case ("Date"):
+                request.addHeader(headerKey,headerValue);
                 break;
-            case ("Host:"):
-                request.setHostHeader(headerValue);
+            case ("Host"):
+                request.addHeader(headerKey,headerValue);
                 break;
-            case ("Content-Type:"):
-                request.setContentTypeHeader(headerValue);
+            case ("Content-Type"):
+                request.addHeader(headerKey,headerValue);
                 break;
-            case ("Authorization:"):
-                request.setAuthorizationHeader(new ArrayList<String>() {{
-                    add(line.split("\\sBasic\\s")[1]);
-                }});
+            case ("Authorization"):
+                request.addHeader("Authorization", headerValue.substring("Basic ".length()));
+                break;
+            default:
+                //Do nothing;
                 break;
         }
     }
