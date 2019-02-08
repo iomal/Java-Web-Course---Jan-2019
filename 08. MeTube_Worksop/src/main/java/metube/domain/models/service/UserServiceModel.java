@@ -1,5 +1,6 @@
 package metube.domain.models.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserServiceModel {
@@ -8,7 +9,7 @@ public class UserServiceModel {
     private String username;
     private String email;
     private String password;
-    private List<TubeServiceModel> tubes;
+    private List<TubeServiceModel> tubes =new ArrayList<>();
 
     public UserServiceModel() {
     }

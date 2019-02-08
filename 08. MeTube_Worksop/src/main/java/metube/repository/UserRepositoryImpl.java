@@ -75,6 +75,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByUsername(String username) {
+        this.entityManager.clear();
         this.entityManager.getTransaction().begin();
         User user;
         try {

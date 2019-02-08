@@ -10,16 +10,20 @@ import java.util.List;
 public class TubeRepositoryImpl implements TubeRepository {
 
     private final EntityManager entityManager;
+    private final UserRepository userRepository;
 
     @Inject
-    public TubeRepositoryImpl(EntityManager entityManager) {
+    public TubeRepositoryImpl(EntityManager entityManager, UserRepository userRepository) {
         this.entityManager = entityManager;
+        this.userRepository = userRepository;
     }
 
     @Override
     public Tube save(Tube entity) {
         this.entityManager.getTransaction().begin();
         this.entityManager.persist(entity);
+        User user = this.userRepository.findByUsername(entity.getUploader().getUsername());
+        user.addTube(entity);
         this.entityManager.getTransaction().commit();
 
         return entity;

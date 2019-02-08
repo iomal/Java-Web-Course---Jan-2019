@@ -61,7 +61,7 @@ public class Tube extends BaseEntity {
         this.views = views;
     }
 
-    @ManyToOne(targetEntity = User.class)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "uploader", referencedColumnName = "id")
     public User getUploader() {
         return uploader;
@@ -70,4 +70,5 @@ public class Tube extends BaseEntity {
     public void setUploader(User uploader) {
         this.uploader = uploader;
     }
+
 }

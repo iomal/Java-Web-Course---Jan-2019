@@ -1,6 +1,7 @@
 package metube.domain.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -10,7 +11,7 @@ public class User extends BaseEntity {
     private String username;
     private String email;
     private String password;
-    private List<Tube> tubes;
+    private List<Tube> tubes =new ArrayList<>();
 
     public User() {
     }
@@ -42,7 +43,7 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    @OneToMany(targetEntity = Tube.class, mappedBy = "uploader",cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Tube.class, mappedBy = "uploader",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<Tube> getTubes() {
         return tubes;
     }
@@ -51,8 +52,8 @@ public class User extends BaseEntity {
         this.tubes = tubes;
     }
 
-//    public void addTube(Tube tube){
-//        tubes.add(tube);
-//        tube.setUploader(this);
-//    }
+    public void addTube(Tube tube){
+        tubes.add(tube);
+        tube.setUploader(this);
+    }
 }

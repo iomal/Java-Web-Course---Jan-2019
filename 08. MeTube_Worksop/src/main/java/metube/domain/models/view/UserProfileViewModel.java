@@ -1,12 +1,13 @@
 package metube.domain.models.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfileViewModel {
 
     private String username;
     private String email;
-    private List<UserTubesViewModel> tubes;
+    private List<UserTubesViewModel> tubes = new ArrayList<>();
 
     public UserProfileViewModel() {
     }
