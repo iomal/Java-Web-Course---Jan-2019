@@ -1,0 +1,47 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:component>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-casebook">
+            <a class="navbar-brand text-muted h4" href="/">Casebook</a>
+            <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNav">
+                <ul class="navbar-nav row">
+                    <li class="nav-item col-md-4">
+                        <c:choose>
+                            <c:when test="#{session.getAttribute('username') != null}">
+                                <h:link class="nav-link text-muted active h5" value="Home" outcome="home"/>
+                            </c:when>
+                            <c:otherwise>
+                                <h:link class="nav-link text-muted active h5" value="Home" outcome="index"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </li>
+                    <c:choose>
+                        <c:when test="#{session.getAttribute('username') == null}">
+                            <li class="nav-item">
+                                <h:link class="nav-link text-muted active h5" value="Login" outcome="login"/>
+                            </li>
+                            <li class="nav-item">
+                                <h:link class="nav-link text-muted active h5" value="Register" outcome="register"/>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="nav-item">
+                                <h:link class="nav-link text-muted active h5"  value="Friends" outcome="friends"/>
+                            </li>
+                            <li class="nav-item">
+                                <h:form>
+                                    <h:commandLink class="nav-link text-muted active h5"
+                                                   action="#{session.invalidate}" value="Logout"/>
+                                </h:form>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </ul>
+            </div>
+        </nav>
+    </header>
+</ui:component>
+</html>

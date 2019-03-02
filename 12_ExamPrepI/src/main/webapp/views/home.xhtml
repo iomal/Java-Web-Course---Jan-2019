@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="templates/base-layout.xhtml">
+    <ui:define name="main-content">
+        <main class="mt-3">
+            <hr class="my-3"/>
+            <div class="text-center mb-3">
+                <h1 class="text-center">Wellcome, #{session.getAttribute('username')}</h1>
+            </div>
+            <hr class="my-3"/>
+            <div class="row mb-4 d-flex justify-content-around flex-wrap">
+                <ui:repeat value="#{list.JobsN(3)}" var="job1">
+                    <div class="row mb-4 d-flex justify-content-around">
+                        <ui:repeat value="#{job1}" var="job">
+                            <h:panelGroup var="index" rendered="#{job!=null}" layout="block">
+                                <div class="col-md-3 d-flex flex-column text-center">
+                                    <h:graphicImage library="img" name="#{job.sector}.jpg"
+                                                    class="img-thumbnail" width="300" height="300"/>
+                                    <h5 class="text-center">#{job.profession}</h5>
+                                    <h:link value="Details" outcome="job-details?id=#{job.id}" class="btn btn-info"/>
+                                    <h:link value="Delete" outcome="delete-job?id=#{job.id}" class="btn btn-danger">
+                                        <f:param name="id" value="#{job.id}" />
+                                    </h:link>
+                                </div>
+                            </h:panelGroup>
+                        </ui:repeat>
+                    </div>
+                </ui:repeat>
+                <ui:repeat value="#{list.jobsServModel}" var="job">
+                    <div class="col-md-3 d-flex flex-column text-center mt-4 mx-auto">
+                                <h:graphicImage library="img" name="#{job.sector}.jpg"
+                                                class="img-thumbnail mx-auto" width="300" height="300"/>
+                                <h5 class="text-center">#{job.profession}</h5>
+                                <h:link value="Details" outcome="job-details?id=#{job.id}" class="btn btn-info"/>
+                                <h:link value="Delete" outcome="delete-job?id=#{job.id}" class="btn btn-danger">
+                                    <f:param name="id" value="#{job.id}" />
+                                </h:link>
+                    </div>
+                </ui:repeat>
+            </div>
+        </main>
+    </ui:define>
+</ui:composition>
+</html>

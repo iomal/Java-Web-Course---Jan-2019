@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition template="templates/base-layout.xhtml">
+    <ui:define name="main-content">
+        <main class="mt-3">
+            <hr class="my-3"/>
+            <div class="text-center mb-3">
+                <h1 class="text-center">Wellcome, #{session.getAttribute('username')}</h1>
+            </div>
+            <hr class="my-4"/>
+            <div class="row friend2 mb-4 d-flex flex-wrap">
+
+                <c:forEach items="#{addFriends.friendsToAdd}" var="model">
+                    <div class="friend d-flex flex-column text-center">
+                        <c:choose>
+                            <c:when test="#{model.gender == 'male'}">
+                                <h:graphicImage library="img" name="male.png"
+                                                class="mx-auto img-thumbnail" width="200" height="200"/>
+                            </c:when>
+                            <c:otherwise>
+                                <h:graphicImage library="img" name="female.png"
+                                                class="mx-auto img-thumbnail" width="200" height="200"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <h5 class="text-center">#{model.username}</h5>
+                        <h:form>
+                            <h:commandButton class="btn btn-info" value="Add Friend" action="#{addFriends.makeFriend(model.id)}"/>
+                        </h:form>
+                    </div>
+                </c:forEach>
+
+            </div>
+        </main>
+    </ui:define>
+</ui:composition>
+</html>

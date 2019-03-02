@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+    <h:outputScript name="/js/bootstrap.min.js"/>
+    <h:outputScript name="/js/jquery.min.js"/>
+    <f:event type="preRenderView"
+             listener="#{facesContext.externalContext.response.setHeader('Cache-Control', 'no-cache, no-store')}"/>
+    <title>JSF Demo</title>
+</h:head>
+<h:body>
+    <h:panelGroup layout="block" class="container mt-3">
+        <f:verbatim>
+            <hr style="height: 2px;" class="bg-dark"/>
+        </f:verbatim>
+        <f:verbatim><h1 class="text-center">Employee Register</h1></f:verbatim>
+        <f:verbatim>
+            <hr style="height: 2px;" class="bg-dark"/>
+        </f:verbatim>
+        <h:dataTable value="#{employees.employees}" var="e"
+                     styleClass="table">
+            <h:column><f:facet name="header">#</f:facet>#{employees.employees.indexOf(e)+1}</h:column>
+            <h:column>
+                <f:facet name="header">First Name</f:facet>
+                #{e.firstName}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Last Name</f:facet>
+                #{e.lastName}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Position</f:facet>
+                #{e.position}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Salary</f:facet>
+                #{e.salary}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Age</f:facet>
+                #{e.age}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Actions</f:facet>
+                <h:form>
+                    <h:commandButton styleClass="btn btn-danger" value="Remove" action="#{employees.delete(e)}"/>
+                </h:form>
+            </h:column>
+        </h:dataTable>
+
+        <f:verbatim>
+            <hr style="height: 2px;" class="bg-dark"/>
+        </f:verbatim>
+        <h:form styleClass="form">
+            <h:panelGroup layout="block" styleClass="names-holder d-flex justify-content-between">
+                <h:panelGroup layout="block" styleClass="form-group w-25">
+                    <h:outputLabel for="firstName">First Name</h:outputLabel>
+                    <h:inputText id="firstName" value="#{employees.employeeBindingModel.firstName}" styleClass="form-control"/>
+                </h:panelGroup>
+             <h:panelGroup layout="block" styleClass="form-group w-25">
+                    <h:outputLabel for="lastName">Last Name</h:outputLabel>
+                    <h:inputText id="lastName" value="#{employees.employeeBindingModel.lastName}" styleClass="form-control"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="form-group w-25">
+                    <h:outputLabel for="position">Position</h:outputLabel>
+                    <h:inputText id="position" value="#{employees.employeeBindingModel.position}" styleClass="form-control"/>
+                </h:panelGroup>
+            </h:panelGroup>
+            <h:panelGroup layout="block" styleClass="numbers-holders d-flex justify-content-between">
+                <h:panelGroup layout="block" styleClass="form-group w-25">
+                    <h:outputLabel for="salary">Salary</h:outputLabel>
+                    <p:inputNumber id="salary" value="#{employees.employeeBindingModel.salary}" styleClass="form-control"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="form-submit-holder d-flex justify-content-center w-25">
+                    <h:commandButton styleClass="btn btn-success mt-4 mb-3 mx-auto w-100"
+                                     action="#{employees.register}"
+                                     value="Register"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" styleClass="form-group w-25">
+                    <h:outputLabel for="age">Age</h:outputLabel>
+                    <p:inputNumber id="age" value="#{employees.employeeBindingModel.age}" styleClass="form-control"/>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:form>
+
+        <f:verbatim>
+        <hr style="height: 2px;" class="bg-dark"/>
+        </f:verbatim>
+        <h:panelGroup layout="block" styleClass="d-flex justify-content-between">
+            <h5 class="w-50">Total Money Needed: $
+                <h:outputText value="#{employees.sumTotalSalaries}">
+                    <f:convertNumber pattern="#0.00"/>
+                </h:outputText>
+            </h5>
+            <h5 class="w-50 text-right">Average Salary: $
+                <h:outputText value="#{employees.avarageSalary}">
+                    <f:convertNumber pattern="#0.00"/>
+                </h:outputText></h5>
+        </h:panelGroup>
+        <f:verbatim>
+        <hr style="height: 2px;" class="bg-dark"/>
+        </f:verbatim>
+    </h:panelGroup>
+</h:body>
+</html>

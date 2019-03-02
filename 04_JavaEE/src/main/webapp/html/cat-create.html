@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'/>
+</head>
+<body>
+<div style="text-align: center; margin-top: 100px">
+    <div class="container">
+        <h1 style="margin: 25px" class="header">Create a Cat!</h1>
+        <form class="form-vertical" action="/cats/create" method="post">
+            <div style="margin: 15px">
+                <label for="nameInput">Name: </label>
+                <input type="text" id="nameInput" name="name">
+                <br/>
+            </div>
+            <div style="margin: 15px">
+                <label for="breedInput">Breed: </label>
+                <input type="text" id="breedInput" name="breed">
+                <br/>
+            </div>
+            <div style="margin: 15px">
+                <label for="colourInput">Colour: </label>
+                <input type="text" id="colourInput" name="colour">
+                <br/>
+            </div>
+            <div style="margin: 15px">
+                <label for="ageInput">Age: </label>
+                <input type="text" id="ageInput" name="age">
+                <br/>
+            </div>
+            <div style="margin: 15px">
+                <button class="btn" type="submit"><b>Create</b></button>
+                <br/>
+                <div style="margin: 25px">
+                    <a class="btn-link" href="/">Back to Home!</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</html>
