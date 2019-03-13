@@ -6,10 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter({"/views/home.xhtml", "/views/schedule.xhtml", "/views/details.xhtml","/views/details*", "/views/print.xhtml"})
+@WebFilter({"/views/home.xhtml", "/views/schedule.xhtml", "/views/details.xhtml", "/views/print.xhtml"})
 public class AuthorizationFilter implements Filter {
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
         String userId = (String) ((HttpServletRequest) servletRequest).getSession().getAttribute("userId");
 
         if (userId == null) {

@@ -15,7 +15,7 @@ import java.io.Serializable;
 @ViewScoped
 public class DocumentDetailsBean extends BaseBean implements Serializable {
     private DocumentDetailViewModel model;
-    //private ModelMapper modelMapper;
+    private ModelMapper modelMapper = new ModelMapper();
     private DocumentService documentService;
     private String id;
 
@@ -30,8 +30,8 @@ public class DocumentDetailsBean extends BaseBean implements Serializable {
     @PostConstruct
     public void init() {
         id = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-        ModelMapper modelMapper = new ModelMapper();
-        this.model = modelMapper.map(this.documentService.getDocumentById(id), DocumentDetailViewModel.class);
+
+        this.model = this.modelMapper.map(this.documentService.getDocumentById(id), DocumentDetailViewModel.class);
     }
 
     public DocumentDetailViewModel getModel() {

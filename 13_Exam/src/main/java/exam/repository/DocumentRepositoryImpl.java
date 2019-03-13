@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 public class DocumentRepositoryImpl extends BaseRepository implements DocumentRepository {
-
     @Inject
     protected DocumentRepositoryImpl(EntityManager entityManager) {
         super(entityManager);
